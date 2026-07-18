@@ -33,31 +33,47 @@ src/
 │   ├── page.tsx                ← "/" — redirect para /dashboard
 │   ├── globals.css             ← design system preto/dourado (tokens, .card, scrollbar, etc.)
 │   ├── login/page.tsx          ← login + cadastro (client component)
+│   ├── icon.tsx                 ← favicon "1%" dourado (Next.js ImageResponse)
 │   └── (app)/                  ← route group: todas as páginas autenticadas, com sidebar
 │       ├── layout.tsx          ← renderiza <Sidebar /> + conteúdo
-│       ├── dashboard/page.tsx  ← Início: dashboard de painéis (progresso, próxima lição, posições, metas)
+│       ├── dashboard/          ← Início: painéis (progresso, streak, próxima lição, posições, metas)
+│       │   ├── page.tsx
+│       │   └── loading.tsx     ← skeleton
 │       ├── curso/
 │       │   ├── page.tsx            ← lista das 20 lições em 4 blocos (via CourseList)
+│       │   ├── loading.tsx         ← skeleton
 │       │   └── [id]/
 │       │       ├── page.tsx        ← detalhe da lição + exercício
+│       │       ├── loading.tsx     ← skeleton
 │       │       └── actions.ts      ← server action markLessonCompleted
-│       ├── posicoes/page.tsx   ← consulta por posição (campo animado + tabs)
+│       ├── posicoes/
+│       │   ├── page.tsx        ← consulta por posição (campo animado + carrossel de etapas)
+│       │   └── loading.tsx     ← skeleton
+│       ├── metas/               ← metas com plano de coaching (etapas + práticas)
+│       │   ├── page.tsx
+│       │   ├── loading.tsx     ← skeleton
+│       │   └── actions.ts      ← server actions addGoal/toggleGoal/deleteGoal/toggleStep
 │       └── configuracoes/
-│           ├── page.tsx        ← conta, metas pessoais, histórico, sobre (absorveu /perfil)
-│           └── actions.ts      ← server actions addGoal/toggleGoal/deleteGoal
+│           ├── page.tsx        ← conta, histórico, link pra /metas, sobre (absorveu /perfil)
+│           └── loading.tsx     ← skeleton
 ├── components/
 │   ├── sidebar.tsx              ← nav lateral (desktop) + top bar/bottom tabs (mobile)
 │   ├── fade-in.tsx               ← wrapper de animação de entrada (framer-motion)
+│   ├── skeleton.tsx               ← bloco de loading state (pulse)
 │   ├── radial-progress.tsx       ← anel de progresso SVG animado
 │   ├── course-list.tsx           ← lista de blocos/lições com stagger animation
-│   ├── position-field.tsx        ← diagrama SVG de campo com marcadores por posição
-│   ├── positions-view.tsx        ← tabs + campo + conteúdo animado (client)
-│   ├── goals-list.tsx            ← lista de metas pessoais (add/toggle/remover, client)
+│   ├── position-field.tsx        ← diagrama SVG de campo, marcadores por posição + motivo animado por seção
+│   ├── positions-view.tsx        ← carrossel de etapas + campo (client)
+│   ├── goal-form.tsx             ← formulário de nova meta (client)
+│   ├── goal-card.tsx             ← plano da meta: milestones sequenciais + práticas contínuas (client)
 │   ├── sign-out-button.tsx       ← botão de logout reutilizável
 │   ├── markdown-lite.tsx         ← renderizador leve (## headers, - listas, **negrito**)
-│   └── complete-lesson-button.tsx ← botão "marcar como concluída" com animação de sucesso
+│   └── complete-lesson-button.tsx ← botão "marcar como concluída" com animação + som de sucesso
 ├── lib/
 │   ├── lessons.ts               ← withStatus() / groupByBlock() / blockProgress() — lógica de desbloqueio e progresso
+│   ├── goal-templates.ts        ← matchGoalTemplate() — planos pré-escritos (capitão, cobrador, genérico)
+│   ├── streak.ts                 ← computeStreak() — sequência de dias com lição concluída
+│   ├── sound.ts                  ← playSuccessChime()/primeAudio() — Web Audio API, sem asset externo
 │   └── supabase/
 │       ├── client.ts            ← cliente browser
 │       ├── server.ts             ← cliente server component (cookies)
@@ -105,11 +121,23 @@ create table user_goals (
   achieved boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+create table goal_steps (
+  id uuid primary key default gen_random_uuid(),
+  goal_id uuid not null references user_goals (id) on delete cascade,
+  kind text not null check (kind in ('milestone', 'practice')), -- milestone = sequencial/desbloqueável; practice = sempre visível, sem conclusão
+  order_index smallint not null,     -- ordem dentro do próprio kind (milestones e practices numeram separado)
+  title text not null,
+  description text not null,
+  completed boolean not null default false, -- só relevante pra milestone
+  created_at timestamptz not null default now()
+);
 ```
 
 **RLS:**
 - `lessons` e `positions_content`: `select` liberado para qualquer usuário autenticado (conteúdo não é sensível, é o mesmo pra todo mundo).
 - `user_progress` e `user_goals`: `select`/`insert`/`update`/`delete` restritos a `auth.uid() = user_id`.
+- `goal_steps`: mesma regra, mas via subquery (`exists (select 1 from user_goals g where g.id = goal_id and g.user_id = auth.uid())`), já que não tem `user_id` direto.
 
 Ver decisão D005 em `DECISIONS.md` para o raciocínio completo.
 
@@ -167,3 +195,48 @@ lições 1-7, 9-17 vem literalmente dos documentos-fonte** (`MENTALIDADE.docx`,
 futura nesse conteúdo deve preservar essa regra. As exceções documentadas
 (lição 8, lições 18-20) são conteúdo original e estão marcadas como tal em
 `DECISIONS.md` D003.
+
+## 11. Sistema de metas (coaching) — `src/lib/goal-templates.ts`
+
+Toda meta criada em `/metas` recebe automaticamente um "plano" gerado a
+partir de `matchGoalTemplate(texto)`: uma correspondência simples por
+palavra-chave (normalizada, sem acento) contra um pequeno conjunto de
+templates pré-escritos. Hoje existem dois templates específicos —
+**capitão** (`capitao`, `lider`, `bracadeira`...) e **cobrador de bola
+parada** (`cobrador`, `escanteio`, `falta`, `penalti`...) — e um template
+**genérico** usado como fallback pra qualquer outra meta.
+
+Cada template retorna uma lista de passos de dois tipos:
+- **`milestone`** — sequenciais, desbloqueiam um de cada vez (mesma lógica
+  de `withStatus` das lições: só o próximo milestone não concluído mostra a
+  descrição; os futuros ficam com ícone de cadeado e sem texto visível).
+  Renderizado em `GoalCard` (`src/components/goal-card.tsx`).
+- **`practice`** — hábitos contínuos ligados a gatilhos do jogo (ex.: "quando
+  o time sofrer um gol...", "nos dias de coletivo..."). Sempre visíveis,
+  sem estado de conclusão — são lembretes de prática recorrente, não uma
+  checklist de progresso.
+
+Isso **não é geração por IA em tempo real** — é correspondência estática
+contra planos que eu (Claude) escrevi com antecedência, no mesmo tom
+gradual/gentil pedido pelo usuário ("não força tanto... aos poucos"). Se um
+dia quiser geração de plano verdadeiramente dinâmica por IA pra qualquer
+meta, isso exigiria integrar uma API de LLM (custo + chave de API) — ver
+`DECISIONS.md` D010 pro raciocínio completo dessa escolha.
+
+## 12. Outras funcionalidades (sessão 005)
+
+- **Streak** (`src/lib/streak.ts`): `computeStreak()` conta dias
+  consecutivos (UTC) com pelo menos uma lição concluída, terminando hoje ou
+  ontem — se não há atividade em nenhum dos dois, a sequência é 0. Exibido
+  no dashboard como card com ícone de chama.
+- **Som de sucesso** (`src/lib/sound.ts`): sintetizado via Web Audio API
+  (dois tons em sequência), sem nenhum arquivo de áudio externo. `primeAudio()`
+  é chamado de forma síncrona no clique (antes do `await` da server action)
+  pra garantir que o `AudioContext` seja criado/retomado dentro do gesto do
+  usuário — necessário pelas políticas de autoplay dos navegadores.
+- **Loading states**: cada rota autenticada tem um `loading.tsx` (convenção
+  nativa do Next.js App Router) com skeletons via `src/components/skeleton.tsx`
+  — aparecem automaticamente durante a navegação/streaming, sem lógica extra.
+- **Favicon**: `src/app/icon.tsx` gera um "1%" em gradiente dourado sobre
+  fundo escuro via `next/og` `ImageResponse` — não é um arquivo estático,
+  é gerado em build/request.

@@ -2,6 +2,22 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.0] — 2026-07-18 — Sistema de metas com coaching + polish
+
+**Detalhes em `sessions/sessao-005.md`.**
+
+### Adicionado
+- Página `/metas` dedicada: metas com plano de coaching gerado automaticamente (etapas sequenciais desbloqueáveis + práticas contínuas), templates para "virar capitão" e "cobrador de bola parada", fallback genérico
+- Tabela `goal_steps` no Supabase (com RLS)
+- Favicon "1%" dourado gerado via `icon.tsx`
+- Streak (sequência de dias) no dashboard
+- Som de sucesso (Web Audio API) ao concluir uma lição
+- Loading states (skeleton) em todas as rotas autenticadas
+- Posições redesenhado como carrossel passo a passo, com animações contextuais no diagrama de campo por tipo de seção (menos texto empilhado, mais ilustrativo)
+
+### Alterado
+- Metas saiu de dentro de Configurações e virou item próprio na sidebar (5 itens agora)
+
 ## [1.2.0] — 2026-07-18 — Redesign completo + rebrand THE ONE PORCENT
 
 **Detalhes em `sessions/sessao-004.md`.**

@@ -80,3 +80,21 @@
 **Motivo:** Preferência explícita do usuário.
 **Trade-off:** A URL de produção muda (de `protocolo-ouro.vercel.app` pra algo como `the-one-porcent.vercel.app`) — qualquer link salvo do endereço antigo deixa de funcionar. Sem ferramenta automática disponível pra renomear repositório GitHub ou projeto Vercel (nem `gh` CLI headless nem endpoint MCP) — depende de passos manuais do usuário no dashboard de cada serviço.
 **Revisitar quando:** N/A — decisão definitiva, só falta execução (ver `sessions/sessao-004.md`).
+
+## D010 — Planos de meta como templates estáticos por palavra-chave, não geração por IA em tempo real
+
+**Data:** 2026-07-18 · sessao-005
+**Contexto:** Usuário pediu que, ao criar uma meta, o sistema funcione "como um psicólogo" — gerando um plano passo a passo personalizado (etapas sequenciais + práticas contínuas ligadas a situações de jogo) pra ajudar a alcançar aquela meta específica.
+**Decisão:** Implementado como correspondência estática por palavra-chave (`src/lib/goal-templates.ts`) contra um pequeno conjunto de templates que eu (Claude) escrevi com antecedência — hoje: capitão, cobrador de bola parada, e um genérico de fallback — em vez de chamar uma API de LLM em tempo real pra gerar um plano sob medida pra qualquer texto de meta.
+**Motivo:** Uma integração de IA real em tempo de execução exigiria uma chave de API paga (ex.: Anthropic/OpenAI), gerenciamento de custo por geração, tratamento de erro de rede/latência, e potencialmente moderação de conteúdo pra entradas arbitrárias do usuário — escopo bem maior que o pedido original, e um novo componente de custo recorrente que o usuário não pediu explicitamente. Os templates estáticos cobrem os dois exemplos que o próprio usuário deu (capitão, cobrador — que já são citados como exemplo na spec original) com qualidade alta, e o fallback genérico garante que nenhuma meta fique sem plano.
+**Trade-off:** Metas que não batem com nenhuma palavra-chave conhecida recebem o plano genérico, que é bom mas não específico pra aquele objetivo em particular. Não escala pra metas muito variadas sem eu escrever mais templates manualmente.
+**Revisitar quando:** Se o usuário pedir explicitamente geração dinâmica por IA (aceitando o custo e a complexidade de integrar uma API de LLM), ou se aparecerem padrões claros de metas recorrentes que mereçam um template dedicado (ex.: "ser titular", "ganhar velocidade").
+
+## D011 — Metas ganha página própria (`/metas`), sai de dentro de Configurações
+
+**Data:** 2026-07-18 · sessao-005
+**Contexto:** Na sessão 004, metas tinham sido movidas pra dentro de Configurações (D007) porque o usuário só tinha pedido 4 itens de sidebar. Nesta sessão, o usuário pediu explicitamente "uma página pra metas" com o sistema de plano/coaching.
+**Decisão:** Criada a rota `/metas` como quinto item da sidebar (ícone `Target`), com o formulário de criar meta e a lista de `GoalCard`. Configurações perde a seção de metas — fica só com conta, atalho pra `/metas`, histórico de lições e "sobre o app".
+**Motivo:** Preferência explícita do usuário, e faz sentido dado o tamanho novo da funcionalidade (plano com múltiplas etapas por meta não cabe bem dentro de uma seção de Configurações).
+**Trade-off:** A sidebar volta a ter 5 itens em vez dos 4 que o usuário tinha pedido originalmente — mudança de requisito explícita, não um desvio silencioso.
+**Revisitar quando:** N/A — decisão atual, revisitar só se o usuário pedir pra consolidar de novo.

@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Home, BookOpen, Compass, Settings, LogOut } from "lucide-react";
+import { Home, BookOpen, Compass, Target, Settings, LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const links = [
-  { href: "/dashboard", label: "Início", icon: Home },
-  { href: "/curso", label: "Curso", icon: BookOpen },
-  { href: "/posicoes", label: "Posições", icon: Compass },
-  { href: "/configuracoes", label: "Configurações", icon: Settings },
+  { href: "/dashboard", label: "Início", mobileLabel: "Início", icon: Home },
+  { href: "/curso", label: "Curso", mobileLabel: "Curso", icon: BookOpen },
+  { href: "/posicoes", label: "Posições", mobileLabel: "Posições", icon: Compass },
+  { href: "/metas", label: "Metas", mobileLabel: "Metas", icon: Target },
+  { href: "/configuracoes", label: "Configurações", mobileLabel: "Config.", icon: Settings },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -116,8 +117,8 @@ export function Sidebar() {
                 />
               )}
               <Icon size={20} className={active ? "text-gold-light" : "text-muted"} />
-              <span className={active ? "text-gold-light" : "text-muted"}>
-                {link.label}
+              <span className={`truncate ${active ? "text-gold-light" : "text-muted"}`}>
+                {link.mobileLabel}
               </span>
             </Link>
           );

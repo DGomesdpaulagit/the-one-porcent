@@ -1,7 +1,7 @@
-import { User, Target, History, Info } from "lucide-react";
+import Link from "next/link";
+import { User, Target, History, Info, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { FadeIn } from "@/components/fade-in";
-import { GoalsList } from "@/components/goals-list";
 import { SignOutButton } from "@/components/sign-out-button";
 
 function formatDate(iso: string) {
@@ -25,12 +25,11 @@ export default async function ConfiguracoesPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: goals }, { data: history }] = await Promise.all([
+  const [{ count: goalsCount }, { data: history }] = await Promise.all([
     supabase
       .from("user_goals")
-      .select("id, text, achieved, created_at")
-      .eq("user_id", user!.id)
-      .order("created_at", { ascending: false }),
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user!.id),
     supabase
       .from("user_progress")
       .select("completed_at, lessons(id, title, block)")
@@ -53,7 +52,7 @@ export default async function ConfiguracoesPage() {
       <FadeIn>
         <h1 className="text-2xl font-bold md:text-3xl">Configurações</h1>
         <p className="mt-1 text-sm text-muted">
-          Sua conta, metas pessoais e histórico de progresso.
+          Sua conta, atalhos e histórico de progresso.
         </p>
       </FadeIn>
 
@@ -70,14 +69,23 @@ export default async function ConfiguracoesPage() {
         <SignOutButton />
       </FadeIn>
 
-      <FadeIn delay={0.1} className="card p-5 md:p-6">
-        <div className="mb-3 flex items-center gap-2 text-gold">
-          <Target size={16} />
-          <h2 className="text-xs font-semibold uppercase tracking-wide">
-            Minhas metas
-          </h2>
-        </div>
-        <GoalsList goals={goals ?? []} />
+      <FadeIn delay={0.1}>
+        <Link
+          href="/metas"
+          className="card card-hover flex items-center justify-between p-5"
+        >
+          <div className="flex items-center gap-3">
+            <Target size={18} className="text-gold" />
+            <div>
+              <p className="text-sm font-medium">Minhas metas</p>
+              <p className="text-xs text-muted">
+                {goalsCount ?? 0} meta{goalsCount === 1 ? "" : "s"} — planos e
+                acompanhamento
+              </p>
+            </div>
+          </div>
+          <ChevronRight size={16} className="text-muted" />
+        </Link>
       </FadeIn>
 
       <FadeIn delay={0.15} className="card p-5 md:p-6">
@@ -114,7 +122,7 @@ export default async function ConfiguracoesPage() {
 
       <FadeIn delay={0.2} className="card flex items-center gap-3 p-5 text-sm text-muted">
         <Info size={16} className="text-gold" />
-        THE ONE PORCENT — v1.2.0
+        THE ONE PORCENT — v1.3.0
       </FadeIn>
     </div>
   );

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, ChevronRight, Loader2 } from "lucide-react";
 import { markLessonCompleted } from "@/app/(app)/curso/[id]/actions";
+import { playSuccessChime, primeAudio } from "@/lib/sound";
 
 export function CompleteLessonButton({
   lessonId,
@@ -20,9 +21,11 @@ export function CompleteLessonButton({
   const [done, setDone] = useState(alreadyCompleted);
 
   function handleClick() {
+    primeAudio();
     startTransition(async () => {
       await markLessonCompleted(lessonId);
       setDone(true);
+      playSuccessChime();
       router.refresh();
     });
   }

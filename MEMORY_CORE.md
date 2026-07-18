@@ -5,8 +5,8 @@
 ## 📍 ESTADO ATUAL
 
 **Data:** 2026-07-18
-**Versão:** 1.2.0 — redesign completo + rebrand para THE ONE PORCENT
-**Status:** App no ar em https://the-one-porcent.vercel.app. Rebrand completo (in-app + GitHub + Vercel + URL) concluído. Repositório: `DGomesdpaulagit/the-one-porcent`.
+**Versão:** 1.3.0 — sistema de metas com coaching + polish (favicon, streak, som, skeletons)
+**Status:** App no ar em https://the-one-porcent.vercel.app. Repositório: `DGomesdpaulagit/the-one-porcent`.
 
 ## ✅ O QUE ESTÁ PRONTO
 
@@ -27,17 +27,34 @@
 - [x] Página de Configurações consolidando conta, metas, histórico e informações do app
 - [x] Diagrama de campo animado (SVG) na página de Posições, com marcadores clicáveis por posição
 - [x] Rebrand in-app para "THE ONE PORCENT" (título, sidebar, login, package.json)
+- [x] Favicon "1%" dourado gerado via `icon.tsx` (Next.js `ImageResponse`)
+- [x] Página `/metas` dedicada: metas com plano de coaching (etapas sequenciais desbloqueáveis + práticas contínuas), templates para "capitão" e "cobrador de bola parada", fallback genérico para qualquer outra meta
+- [x] Streak (sequência de dias) no dashboard, calculada a partir de `user_progress.completed_at`
+- [x] Som de sucesso (Web Audio API, sintetizado) ao concluir uma lição
+- [x] Loading states (skeleton) em todas as rotas autenticadas via `loading.tsx`
+- [x] Posições redesenhado como carrossel passo a passo (uma seção por vez, setas + pontos de navegação) com animações contextuais no diagrama de campo por tipo de seção
 
 ## 🎯 PRÓXIMA SESSÃO
 
-Roadmap funcional e rebrand 100% entregues, tudo em produção. Nenhuma
-tarefa obrigatória pendente. Decisão em aberto pro usuário: se quiser
-vídeos reais do YouTube na página de Posições (D008) — ele pediu pra
-avaliar as animações primeiro antes de decidir.
+Roadmap funcional, rebrand e polish 100% entregues, tudo em produção.
+Nenhuma tarefa obrigatória pendente. Decisão em aberto pro usuário: se
+quiser vídeos reais do YouTube na página de Posições (D008) — ele já viu
+as animações e por enquanto não pediu vídeo, mas pode revisitar.
 
 ## 🐛 BUGS CONHECIDOS
 
 Nenhum ativo. Ver `BUGS.md` para o histórico (3 bugs resolvidos — B001, B002, B003).
+
+## ⚠️ Observação sobre teste no navegador (sessão 005)
+
+O Browser pane usado pra testar (Claude_Browser) ficou instável durante
+essa sessão — cliques por `ref` frequentemente resolviam pra coordenada
+`(0,0)` e não registravam, mesmo em elementos comuns (botões de nav,
+formulários). Não é um bug do app: abrir uma aba nova geralmente resolve;
+quando o clique continuou falhando, a validação foi feita inserindo dados
+de teste direto via SQL e conferindo a renderização com `read_page`, que
+funcionou normalmente o tempo todo. Se isso acontecer de novo, tentar aba
+nova primeiro antes de assumir que é regressão no código.
 
 ## 🔑 ARQUIVOS CRÍTICOS
 

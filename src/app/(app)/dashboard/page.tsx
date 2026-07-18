@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowLeftRight, Brain, ChevronRight, Shield, ShieldCheck } from "lucide-react";
+import { ArrowLeftRight, Brain, ChevronRight, Flame, Shield, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { withStatus, blockProgress } from "@/lib/lessons";
+import { computeStreak } from "@/lib/streak";
 import { FadeIn } from "@/components/fade-in";
 import { RadialProgress } from "@/components/radial-progress";
 
@@ -21,7 +22,10 @@ export default async function DashboardPage() {
 
   const [{ data: lessons }, { data: progress }, { data: goals }] = await Promise.all([
     supabase.from("lessons").select("*"),
-    supabase.from("user_progress").select("lesson_id").eq("user_id", user!.id),
+    supabase
+      .from("user_progress")
+      .select("lesson_id, completed_at")
+      .eq("user_id", user!.id),
     supabase
       .from("user_goals")
       .select("id, text, achieved")
@@ -38,6 +42,7 @@ export default async function DashboardPage() {
   const nextLesson = withStatuses.find((l) => l.status === "available");
   const progressPct = total > 0 ? (completedCount / total) * 100 : 0;
   const blocks = blockProgress(withStatuses);
+  const streak = computeStreak((progress ?? []).map((p) => p.completed_at));
 
   const firstName = user?.email?.split("@")[0];
 
@@ -56,12 +61,31 @@ export default async function DashboardPage() {
         </p>
       </FadeIn>
 
-      <div className="grid gap-4 md:grid-cols-[auto_1fr]">
+      <div className="grid gap-4 md:grid-cols-[auto_auto_1fr]">
         <FadeIn delay={0.05} className="card flex flex-col items-center justify-center gap-3 p-6">
           <RadialProgress percent={progressPct} label="do curso" />
           <p className="text-sm text-muted">
             {completedCount} de {total} lições concluídas
           </p>
+        </FadeIn>
+
+        <FadeIn
+          delay={0.08}
+          className="card flex flex-row items-center justify-center gap-3 p-6 md:flex-col md:justify-center"
+        >
+          <span
+            className={`flex h-14 w-14 items-center justify-center rounded-full ${
+              streak > 0 ? "bg-gold/10 text-gold" : "bg-surface-2 text-muted"
+            }`}
+          >
+            <Flame size={24} className={streak > 0 ? "fill-gold/20" : ""} />
+          </span>
+          <div className="text-center">
+            <p className="text-2xl font-bold">{streak}</p>
+            <p className="text-[11px] text-muted">
+              {streak === 1 ? "dia seguido" : "dias seguidos"}
+            </p>
+          </div>
         </FadeIn>
 
         <FadeIn delay={0.1} className="card flex flex-col justify-between gap-4 p-6">
@@ -151,7 +175,7 @@ export default async function DashboardPage() {
               Suas metas
             </p>
             <Link
-              href="/configuracoes"
+              href="/metas"
               className="text-xs text-muted hover:text-foreground"
             >
               Ver todas
