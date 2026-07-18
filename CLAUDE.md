@@ -41,9 +41,9 @@ Executar sempre ao concluir um bloco de trabalho significativo:
 2. **Commit + Push:**
    - `git add` dos arquivos específicos (nunca `git add -A` sem checar antes).
    - Commit descritivo (o quê + por quê).
-   - `git push origin main` — **só depois que houver remoto configurado** (ver `MEMORY_CORE.md`; ainda não configurado nesta v1.0.0).
+   - `git push origin main` — remoto: `https://github.com/DGomesdpaulagit/protocolo-ouro` (público).
 3. **Deploy:**
-   - Ainda não configurado. Quando configurar Vercel + GitHub, documentar aqui se o deploy é automático (push dispara) ou o comando manual exato.
+   - Ver `MEMORY_CORE.md` para o status atual (Vercel sendo configurado na sessão 002). Documentar aqui assim que estiver ativo se o deploy é automático (push dispara) ou o comando manual exato.
 4. **Resumo final pro usuário:** checklist numerado (ver `metodo-registro-e-continuidade.md` na pasta `Documents` para o formato exato), depois 1-2 parágrafos em prosa.
 
 ## Convenções
