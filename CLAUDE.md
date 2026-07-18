@@ -43,7 +43,8 @@ Executar sempre ao concluir um bloco de trabalho significativo:
    - Commit descritivo (o quê + por quê).
    - `git push origin main` — remoto: `https://github.com/DGomesdpaulagit/protocolo-ouro` (público).
 3. **Deploy:**
-   - Ver `MEMORY_CORE.md` para o status atual (Vercel sendo configurado na sessão 002). Documentar aqui assim que estiver ativo se o deploy é automático (push dispara) ou o comando manual exato.
+   - **Automático.** Vercel está conectado ao GitHub (projeto `protocolo-ouro`, time `davi-gomes-de-paula-s-projects`) — todo push em `main` dispara build e deploy de produção sozinho, não precisa rodar nenhum comando. URL: https://protocolo-ouro.vercel.app.
+   - Variáveis de ambiente (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) já configuradas no projeto Vercel — só mudam se o projeto Supabase mudar (ver `docs/SUPABASE_SETUP.md`).
 4. **Resumo final pro usuário:** checklist numerado (ver `metodo-registro-e-continuidade.md` na pasta `Documents` para o formato exato), depois 1-2 parágrafos em prosa.
 
 ## Convenções

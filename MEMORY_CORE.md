@@ -4,9 +4,9 @@
 
 ## 📍 ESTADO ATUAL
 
-**Data:** 2026-07-17
-**Versão:** 1.0.0 — build inicial completo do curso + posições, rodando localmente
-**Status:** App funcional local (`npm run dev`), testado ponta a ponta no navegador. Ainda **não** deployado (sem Vercel, sem remoto Git configurado).
+**Data:** 2026-07-18
+**Versão:** 1.0.0 — build inicial completo, em produção
+**Status:** App no ar em https://protocolo-ouro.vercel.app. GitHub (`DGomesdpaulagit/protocolo-ouro`, público) conectado à Vercel — todo push em `main` dispara deploy automático. Zero erros de runtime confirmados após o deploy.
 
 ## ✅ O QUE ESTÁ PRONTO
 
@@ -20,17 +20,18 @@
 - [x] Lógica de progresso e desbloqueio sequencial (lição N só abre se N-1 concluída)
 - [x] Testado ponta a ponta no navegador com usuário de teste (criado e removido do banco depois)
 - [x] Método de registro/continuidade (este arquivo e os outros da lista) aplicado
+- [x] Repositório GitHub público criado e conectado (`DGomesdpaulagit/protocolo-ouro`)
+- [x] Deploy na Vercel configurado com integração Git (auto-deploy) + env vars do Supabase
 
 ## 🎯 PRÓXIMA SESSÃO
 
-Nenhuma tarefa obrigatória pendente — o roadmap inicial da spec (`docs/PROTOC_1_spec.md`) está 100% entregue exceto os dois itens abaixo, que ficam para quando o usuário quiser:
+Roadmap inicial da spec (`docs/PROTOC_1_spec.md`) 100% entregue e em produção. Único item pendente, opcional, pra quando o usuário quiser:
 
 1. **Página de Perfil** (opcional na spec original): metas pessoais + histórico de lições concluídas por data.
-2. **Deploy na Vercel** — precisa primeiro de um remoto Git (GitHub) configurado; perguntar ao usuário se quer criar um repositório novo ou já tem um.
 
 ## 🐛 BUGS CONHECIDOS
 
-Nenhum ativo. Ver `BUGS.md` para o histórico (1 bug resolvido nesta sessão — B001).
+Nenhum ativo. Ver `BUGS.md` para o histórico (2 bugs resolvidos — B001, B002).
 
 ## 🔑 ARQUIVOS CRÍTICOS
 

@@ -2,6 +2,17 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.1] — 2026-07-18 — Deploy em produção
+
+**Detalhes em `sessions/sessao-002.md`.**
+
+### Adicionado
+- Repositório GitHub público (`DGomesdpaulagit/protocolo-ouro`), conectado à Vercel para deploy automático a cada push em `main`
+- App em produção: https://protocolo-ouro.vercel.app
+
+### Corrigido
+- B002 — variáveis de ambiente do Supabase não aplicadas no primeiro deploy (ver `BUGS.md`)
+
 ## [1.0.0] — 2026-07-17 — Build inicial completo
 
 **Detalhes em `sessions/sessao-001.md`.**
