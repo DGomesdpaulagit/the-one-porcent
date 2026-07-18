@@ -35,12 +35,16 @@ src/
 │   │   └── [id]/
 │   │       ├── page.tsx        ← detalhe da lição + exercício
 │   │       └── actions.ts      ← server action markLessonCompleted
-│   └── posicoes/page.tsx       ← consulta por posição (tabs client-side)
+│   ├── posicoes/page.tsx       ← consulta por posição (tabs client-side)
+│   └── perfil/
+│       ├── page.tsx            ← metas pessoais + histórico de lições por data
+│       └── actions.ts          ← server actions addGoal/toggleGoal/deleteGoal
 ├── components/
-│   ├── nav.tsx                 ← navegação superior (Início/Curso/Posições/Sair)
+│   ├── nav.tsx                 ← navegação superior (Início/Curso/Posições/Perfil/Sair)
 │   ├── markdown-lite.tsx       ← renderizador leve (## headers, - listas, **negrito**)
 │   ├── complete-lesson-button.tsx ← botão "marcar como concluída" (client)
-│   └── positions-view.tsx      ← tabs de posição (client)
+│   ├── positions-view.tsx      ← tabs de posição (client)
+│   └── goals-list.tsx          ← lista de metas pessoais (add/toggle/remover, client)
 ├── lib/
 │   ├── lessons.ts               ← withStatus() / groupByBlock() — lógica de desbloqueio
 │   └── supabase/
@@ -76,11 +80,19 @@ create table user_progress (
   completed_at timestamptz not null default now(),
   primary key (user_id, lesson_id)
 );
+
+create table user_goals (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  text text not null,
+  achieved boolean not null default false,
+  created_at timestamptz not null default now()
+);
 ```
 
 **RLS:**
 - `lessons` e `positions_content`: `select` liberado para qualquer usuário autenticado (conteúdo não é sensível, é o mesmo pra todo mundo).
-- `user_progress`: `select`/`insert`/`delete` restritos a `auth.uid() = user_id`.
+- `user_progress` e `user_goals`: `select`/`insert`/`update`/`delete` restritos a `auth.uid() = user_id`.
 
 Ver decisão D005 em `DECISIONS.md` para o raciocínio completo.
 

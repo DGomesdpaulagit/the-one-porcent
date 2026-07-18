@@ -8,6 +8,7 @@ const links = [
   { href: "/dashboard", label: "Início" },
   { href: "/curso", label: "Curso" },
   { href: "/posicoes", label: "Posições" },
+  { href: "/perfil", label: "Perfil" },
 ];
 
 export function Nav() {

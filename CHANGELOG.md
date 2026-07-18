@@ -2,6 +2,18 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.0] — 2026-07-18 — Página de Perfil
+
+**Detalhes em `sessions/sessao-003.md`.**
+
+### Adicionado
+- Página `/perfil`: metas pessoais (adicionar, marcar como concluída, remover) e histórico de lições concluídas agrupado por data
+- Tabela `user_goals` no Supabase (com RLS)
+- Link "Perfil" na navegação
+
+### Corrigido
+- B003 — título da lição não aparecia no histórico do Perfil (ver `BUGS.md`)
+
 ## [1.0.1] — 2026-07-18 — Deploy em produção
 
 **Detalhes em `sessions/sessao-002.md`.**

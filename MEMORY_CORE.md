@@ -5,8 +5,8 @@
 ## 📍 ESTADO ATUAL
 
 **Data:** 2026-07-18
-**Versão:** 1.0.0 — build inicial completo, em produção
-**Status:** App no ar em https://protocolo-ouro.vercel.app. GitHub (`DGomesdpaulagit/protocolo-ouro`, público) conectado à Vercel — todo push em `main` dispara deploy automático. Zero erros de runtime confirmados após o deploy.
+**Versão:** 1.1.0 — build completo + página de Perfil, em produção
+**Status:** App no ar em https://protocolo-ouro.vercel.app. GitHub (`DGomesdpaulagit/protocolo-ouro`, público) conectado à Vercel — todo push em `main` dispara deploy automático. Roadmap original 100% entregue, incluindo o item opcional de Perfil.
 
 ## ✅ O QUE ESTÁ PRONTO
 
@@ -22,16 +22,15 @@
 - [x] Método de registro/continuidade (este arquivo e os outros da lista) aplicado
 - [x] Repositório GitHub público criado e conectado (`DGomesdpaulagit/protocolo-ouro`)
 - [x] Deploy na Vercel configurado com integração Git (auto-deploy) + env vars do Supabase
+- [x] Página de Perfil: metas pessoais (adicionar/marcar concluída/remover) + histórico de lições concluídas agrupado por data
 
 ## 🎯 PRÓXIMA SESSÃO
 
-Roadmap inicial da spec (`docs/PROTOC_1_spec.md`) 100% entregue e em produção. Único item pendente, opcional, pra quando o usuário quiser:
-
-1. **Página de Perfil** (opcional na spec original): metas pessoais + histórico de lições concluídas por data.
+Roadmap inicial da spec (`docs/PROTOC_1_spec.md`) 100% entregue, incluindo o item opcional de Perfil, tudo em produção. Nenhuma tarefa obrigatória pendente — próximos passos ficam a critério do usuário (ex.: domínio próprio, mais lições, ajustes de conteúdo).
 
 ## 🐛 BUGS CONHECIDOS
 
-Nenhum ativo. Ver `BUGS.md` para o histórico (2 bugs resolvidos — B001, B002).
+Nenhum ativo. Ver `BUGS.md` para o histórico (3 bugs resolvidos — B001, B002, B003).
 
 ## 🔑 ARQUIVOS CRÍTICOS
 
