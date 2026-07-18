@@ -2,6 +2,23 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.0] — 2026-07-18 — Redesign completo + rebrand THE ONE PORCENT
+
+**Detalhes em `sessions/sessao-004.md`.**
+
+### Adicionado
+- Navegação em sidebar (desktop) / barra de abas (mobile), substituindo a nav superior
+- Dashboard (Início) redesenhado em painéis: progresso radial animado, progresso por bloco, atalhos de posições, metas em destaque
+- Animações em todo o app via framer-motion (transições, listas, sucesso ao concluir lição)
+- Diagrama de campo animado (SVG) na página de Posições, com marcadores clicáveis
+- Página de Configurações consolidando conta, metas pessoais, histórico e "sobre o app"
+- Design system expandido em `globals.css` (novos tokens de cor, `.card`, glow, scrollbar customizada)
+- Rebrand in-app: "Protocolo Ouro" → "THE ONE PORCENT"
+
+### Alterado
+- `/perfil` virou `/configuracoes` (D007)
+- Estrutura de pastas: páginas autenticadas movidas para `src/app/(app)/` com layout compartilhado (D006)
+
 ## [1.1.0] — 2026-07-18 — Página de Perfil
 
 **Detalhes em `sessions/sessao-003.md`.**

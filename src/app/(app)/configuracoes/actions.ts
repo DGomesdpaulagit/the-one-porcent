@@ -22,7 +22,7 @@ export async function addGoal(text: string) {
     .insert({ user_id: user.id, text: trimmed });
 
   if (error) throw error;
-  revalidatePath("/perfil");
+  revalidatePath("/configuracoes");
 }
 
 export async function toggleGoal(goalId: string, achieved: boolean) {
@@ -33,7 +33,7 @@ export async function toggleGoal(goalId: string, achieved: boolean) {
     .eq("id", goalId);
 
   if (error) throw error;
-  revalidatePath("/perfil");
+  revalidatePath("/configuracoes");
 }
 
 export async function deleteGoal(goalId: string) {
@@ -41,5 +41,5 @@ export async function deleteGoal(goalId: string) {
   const { error } = await supabase.from("user_goals").delete().eq("id", goalId);
 
   if (error) throw error;
-  revalidatePath("/perfil");
+  revalidatePath("/configuracoes");
 }

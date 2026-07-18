@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Protocolo Ouro",
+  title: "THE ONE PORCENT",
   description: "Curso de mentalidade e posições para o retorno da lesão.",
 };
 
@@ -27,7 +27,7 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="flex min-h-dvh flex-col bg-background text-foreground">
         {children}
       </body>
     </html>

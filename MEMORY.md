@@ -5,54 +5,71 @@
 
 ## 1. Visão geral
 
-App pessoal de treino mental e tático para um jogador de futebol sub-14,
+**THE ONE PORCENT** (renomeado de "Protocolo Ouro" na sessão 004 — mesmo
+projeto, novo nome, referência direta à lição "Geração 1%" do curso). App
+pessoal de treino mental e tático para um jogador de futebol sub-14,
 afastado por lesão. Curso interativo (estilo Duolingo) com 20 lições em 4
 blocos, progresso salvo por usuário via Supabase Auth, desbloqueio
 sequencial, e uma seção de consulta rápida (Posições) sempre acessível
 independente do progresso no curso.
 
 Especificação original completa em `docs/PROTOC_1_spec.md` (cópia do
-briefing original do usuário).
+briefing original do usuário — nome interno do projeto na spec ainda é
+"Protocolo Ouro", é histórico, não foi reescrito).
 
 ## 2. Stack
 
 - **Frontend:** Next.js 16.2.10 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS v4
-- **Backend/dados:** Supabase (Postgres 17 + Auth)
-- **Deploy:** Vercel (planejado, não configurado ainda)
+- **Animação/UI:** framer-motion (transições, listas animadas), lucide-react (ícones)
+- **Backend/dados:** Supabase (Postgres 17 + Auth) — projeto interno ainda chamado `protocolo-ouro` no Supabase (não renomeado, é só o nome interno do projeto na Supabase, invisível pro usuário final)
+- **Deploy:** Vercel, conectado ao GitHub (ver seção 9)
 
 ## 3. Estrutura de pastas
 
 ```
 src/
 ├── app/
-│   ├── layout.tsx              ← layout raiz, fontes, metadata
+│   ├── layout.tsx              ← layout raiz, fontes, metadata (título "THE ONE PORCENT")
 │   ├── page.tsx                ← "/" — redirect para /dashboard
-│   ├── globals.css             ← tema preto/dourado (variáveis CSS + @theme)
+│   ├── globals.css             ← design system preto/dourado (tokens, .card, scrollbar, etc.)
 │   ├── login/page.tsx          ← login + cadastro (client component)
-│   ├── dashboard/page.tsx      ← progresso geral, atalhos
-│   ├── curso/
-│   │   ├── page.tsx            ← lista das 20 lições em 4 blocos
-│   │   └── [id]/
-│   │       ├── page.tsx        ← detalhe da lição + exercício
-│   │       └── actions.ts      ← server action markLessonCompleted
-│   ├── posicoes/page.tsx       ← consulta por posição (tabs client-side)
-│   └── perfil/
-│       ├── page.tsx            ← metas pessoais + histórico de lições por data
-│       └── actions.ts          ← server actions addGoal/toggleGoal/deleteGoal
+│   └── (app)/                  ← route group: todas as páginas autenticadas, com sidebar
+│       ├── layout.tsx          ← renderiza <Sidebar /> + conteúdo
+│       ├── dashboard/page.tsx  ← Início: dashboard de painéis (progresso, próxima lição, posições, metas)
+│       ├── curso/
+│       │   ├── page.tsx            ← lista das 20 lições em 4 blocos (via CourseList)
+│       │   └── [id]/
+│       │       ├── page.tsx        ← detalhe da lição + exercício
+│       │       └── actions.ts      ← server action markLessonCompleted
+│       ├── posicoes/page.tsx   ← consulta por posição (campo animado + tabs)
+│       └── configuracoes/
+│           ├── page.tsx        ← conta, metas pessoais, histórico, sobre (absorveu /perfil)
+│           └── actions.ts      ← server actions addGoal/toggleGoal/deleteGoal
 ├── components/
-│   ├── nav.tsx                 ← navegação superior (Início/Curso/Posições/Perfil/Sair)
-│   ├── markdown-lite.tsx       ← renderizador leve (## headers, - listas, **negrito**)
-│   ├── complete-lesson-button.tsx ← botão "marcar como concluída" (client)
-│   ├── positions-view.tsx      ← tabs de posição (client)
-│   └── goals-list.tsx          ← lista de metas pessoais (add/toggle/remover, client)
+│   ├── sidebar.tsx              ← nav lateral (desktop) + top bar/bottom tabs (mobile)
+│   ├── fade-in.tsx               ← wrapper de animação de entrada (framer-motion)
+│   ├── radial-progress.tsx       ← anel de progresso SVG animado
+│   ├── course-list.tsx           ← lista de blocos/lições com stagger animation
+│   ├── position-field.tsx        ← diagrama SVG de campo com marcadores por posição
+│   ├── positions-view.tsx        ← tabs + campo + conteúdo animado (client)
+│   ├── goals-list.tsx            ← lista de metas pessoais (add/toggle/remover, client)
+│   ├── sign-out-button.tsx       ← botão de logout reutilizável
+│   ├── markdown-lite.tsx         ← renderizador leve (## headers, - listas, **negrito**)
+│   └── complete-lesson-button.tsx ← botão "marcar como concluída" com animação de sucesso
 ├── lib/
-│   ├── lessons.ts               ← withStatus() / groupByBlock() — lógica de desbloqueio
+│   ├── lessons.ts               ← withStatus() / groupByBlock() / blockProgress() — lógica de desbloqueio e progresso
 │   └── supabase/
 │       ├── client.ts            ← cliente browser
 │       ├── server.ts             ← cliente server component (cookies)
 │       └── middleware.ts         ← updateSession() usado pelo proxy
 └── proxy.ts                      ← proteção de rotas (Next.js 16; NÃO middleware.ts)
 ```
+
+**Nota sobre o route group `(app)`:** o nome entre parênteses não aparece na
+URL (é só organização de pastas do Next.js) — `/dashboard`, `/curso`,
+`/posicoes` e `/configuracoes` continuam com as mesmas URLs de antes.
+Importar algo de dentro do grupo usa o caminho literal com parênteses, ex.:
+`@/app/(app)/curso/[id]/actions`.
 
 ## 4. Schema Supabase (projeto `protocolo-ouro`, ref `pbbzozeztqrenpfnhylp`)
 
@@ -120,10 +137,13 @@ documento original — o aviso sobre isso foi preservado no conteúdo da lição
 
 ## 7. Design system
 
-- **Paleta:** fundo `#0a0a0a` / superfícies `#1c1c1c`, dourado `#d4af37` (`--gold`) e `#f5d67a` (`--gold-light`), texto `#f5f5f0`, texto secundário `#9a958a` (`--muted`), bordas `#2e2b23`.
-- Definido em `src/app/globals.css` via variáveis CSS + `@theme inline` (Tailwind v4) — classes utilitárias: `bg-background`, `bg-surface`, `text-gold`, `text-gold-light`, `text-muted`, `border-border`.
+- **Paleta:** fundo `#08080a` / superfície `#151513` / superfície elevada `#1e1e1a`, dourado `#d4af37` (`--gold`), `#f5d67a` (`--gold-light`), `#8a6f24` (`--gold-dim`), texto `#f5f3ec`, texto secundário `#9a958a` (`--muted`) e `#6b675e` (`--muted-2`), bordas `#2a271e` / `#3a3628` (`--border-light`), vermelho de perigo `#e5484d` (`--danger`).
+- Definido em `src/app/globals.css` via variáveis CSS + `@theme inline` (Tailwind v4). Classes utilitárias próprias: `.card` (superfície + borda + radius padrão), `.card-hover` (glow dourado sutil no hover), `.gold-text-gradient` (texto com gradiente dourado, usado na wordmark).
+- Fundo com glow radial sutil dourado (`body` em `globals.css`), scrollbar customizada, seleção de texto dourada, `:focus-visible` com outline dourado.
 - Tipografia: Geist Sans/Mono (padrão do template Next.js).
 - Mobile-first, tema único (sempre escuro — não segue `prefers-color-scheme`, é intencional pela spec original).
+- **Animações (framer-motion):** entrada em fade+slide (`FadeIn`), stagger em listas (`CourseList`, `GoalsList`), progresso animado (`RadialProgress`, barras de bloco), transição de aba com `AnimatePresence` (Posições), indicador ativo da sidebar com `layoutId` (efeito de "pílula deslizante"), animação de sucesso ao concluir lição.
+- **Navegação:** sidebar fixa à esquerda no desktop (`md:` e acima); no mobile vira barra superior (marca + sair) + barra de abas fixa embaixo (ícones lucide-react). Ver `src/components/sidebar.tsx`.
 
 ## 8. Autenticação
 

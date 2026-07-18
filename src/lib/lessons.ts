@@ -52,3 +52,12 @@ export function groupByBlock(lessons: LessonWithStatus[]) {
       lessons: items.sort((a, b) => a.order_in_block - b.order_in_block),
     }));
 }
+
+export function blockProgress(lessons: LessonWithStatus[]) {
+  return groupByBlock(lessons).map((group) => ({
+    block: group.block,
+    name: group.name,
+    total: group.lessons.length,
+    completed: group.lessons.filter((l) => l.status === "completed").length,
+  }));
+}

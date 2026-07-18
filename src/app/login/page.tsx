@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
@@ -47,9 +49,14 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-1 items-center justify-center px-4">
-      <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-6">
-        <h1 className="mb-1 text-xl font-semibold text-gold">
-          Protocolo Ouro
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="card w-full max-w-sm p-7"
+      >
+        <h1 className="mb-1 text-2xl font-extrabold tracking-tight">
+          <span className="gold-text-gradient">THE ONE</span> PORCENT
         </h1>
         <p className="mb-6 text-sm text-muted">
           {mode === "signin" ? "Entre na sua conta" : "Crie sua conta"}
@@ -62,7 +69,7 @@ export default function LoginPage() {
             placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded border border-border bg-background px-3 py-2 text-sm outline-none focus:border-gold"
+            className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition focus:border-gold"
           />
           <input
             type="password"
@@ -71,17 +78,18 @@ export default function LoginPage() {
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded border border-border bg-background px-3 py-2 text-sm outline-none focus:border-gold"
+            className="rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition focus:border-gold"
           />
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
           {message && <p className="text-sm text-gold-light">{message}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded bg-gold px-3 py-2 text-sm font-semibold text-black transition hover:bg-gold-light disabled:opacity-50"
+            className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gold px-3 py-2.5 text-sm font-semibold text-black transition hover:bg-gold-light disabled:opacity-50"
           >
+            {loading && <Loader2 size={15} className="animate-spin" />}
             {loading
               ? "Aguarde..."
               : mode === "signin"
@@ -96,13 +104,13 @@ export default function LoginPage() {
             setError(null);
             setMessage(null);
           }}
-          className="mt-4 text-sm text-muted hover:text-foreground"
+          className="mt-4 text-sm text-muted transition hover:text-foreground"
         >
           {mode === "signin"
             ? "Não tem conta? Criar uma"
             : "Já tem conta? Entrar"}
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 }

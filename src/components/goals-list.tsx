@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { addGoal, toggleGoal, deleteGoal } from "@/app/perfil/actions";
+import { AnimatePresence, motion } from "framer-motion";
+import { Plus, X } from "lucide-react";
+import { addGoal, toggleGoal, deleteGoal } from "@/app/(app)/configuracoes/actions";
 
 type Goal = {
   id: string;
@@ -31,13 +33,14 @@ export function GoalsList({ goals }: { goals: Goal[] }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Ex: virar capitão do time"
-          className="flex-1 rounded border border-border bg-background px-3 py-2 text-sm outline-none focus:border-gold"
+          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none transition focus:border-gold"
         />
         <button
           type="submit"
           disabled={isPending || !text.trim()}
-          className="rounded bg-gold px-4 py-2 text-sm font-semibold text-black transition hover:bg-gold-light disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-black transition hover:bg-gold-light disabled:opacity-50"
         >
+          <Plus size={15} />
           Adicionar
         </button>
       </form>
@@ -46,33 +49,40 @@ export function GoalsList({ goals }: { goals: Goal[] }) {
         <p className="text-sm text-muted">Nenhuma meta ainda.</p>
       ) : (
         <ul className="flex flex-col gap-2">
-          {goals.map((goal) => (
-            <li
-              key={goal.id}
-              className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3"
-            >
-              <label className="flex flex-1 items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={goal.achieved}
-                  onChange={(e) =>
-                    startTransition(() => toggleGoal(goal.id, e.target.checked))
-                  }
-                  className="h-4 w-4 accent-gold"
-                />
-                <span className={goal.achieved ? "text-muted line-through" : ""}>
-                  {goal.text}
-                </span>
-              </label>
-              <button
-                onClick={() => startTransition(() => deleteGoal(goal.id))}
-                className="text-xs text-muted hover:text-foreground"
-                aria-label="Remover meta"
+          <AnimatePresence initial={false}>
+            {goals.map((goal) => (
+              <motion.li
+                key={goal.id}
+                layout
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3"
               >
-                Remover
-              </button>
-            </li>
-          ))}
+                <label className="flex flex-1 items-center gap-2.5 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={goal.achieved}
+                    onChange={(e) =>
+                      startTransition(() => toggleGoal(goal.id, e.target.checked))
+                    }
+                    className="h-4 w-4 accent-gold"
+                  />
+                  <span className={goal.achieved ? "text-muted line-through" : ""}>
+                    {goal.text}
+                  </span>
+                </label>
+                <button
+                  onClick={() => startTransition(() => deleteGoal(goal.id))}
+                  className="text-muted transition hover:text-danger"
+                  aria-label="Remover meta"
+                >
+                  <X size={15} />
+                </button>
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       )}
     </div>

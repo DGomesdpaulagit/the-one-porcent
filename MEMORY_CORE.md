@@ -5,8 +5,8 @@
 ## 📍 ESTADO ATUAL
 
 **Data:** 2026-07-18
-**Versão:** 1.1.0 — build completo + página de Perfil, em produção
-**Status:** App no ar em https://protocolo-ouro.vercel.app. GitHub (`DGomesdpaulagit/protocolo-ouro`, público) conectado à Vercel — todo push em `main` dispara deploy automático. Roadmap original 100% entregue, incluindo o item opcional de Perfil.
+**Versão:** 1.2.0 — redesign completo + rebrand para THE ONE PORCENT
+**Status:** App redesenhado (sidebar, dashboards, animações framer-motion, página de Configurações) e renomeado de "Protocolo Ouro" para "THE ONE PORCENT" dentro do app. Rename externo (GitHub/Vercel/URL) em andamento — ver seção Deploy abaixo e `sessions/sessao-004.md`.
 
 ## ✅ O QUE ESTÁ PRONTO
 
@@ -20,13 +20,25 @@
 - [x] Lógica de progresso e desbloqueio sequencial (lição N só abre se N-1 concluída)
 - [x] Testado ponta a ponta no navegador com usuário de teste (criado e removido do banco depois)
 - [x] Método de registro/continuidade (este arquivo e os outros da lista) aplicado
-- [x] Repositório GitHub público criado e conectado (`DGomesdpaulagit/protocolo-ouro`)
+- [x] Repositório GitHub público criado e conectado
 - [x] Deploy na Vercel configurado com integração Git (auto-deploy) + env vars do Supabase
-- [x] Página de Perfil: metas pessoais (adicionar/marcar concluída/remover) + histórico de lições concluídas agrupado por data
+- [x] Página de Perfil (agora parte de Configurações): metas pessoais + histórico de lições por data
+- [x] Redesign completo: sidebar (desktop) / barra de abas (mobile), dashboard em painéis (progresso radial animado, progresso por bloco, atalhos de posições, metas em destaque), animações framer-motion em todo o app
+- [x] Página de Configurações consolidando conta, metas, histórico e informações do app
+- [x] Diagrama de campo animado (SVG) na página de Posições, com marcadores clicáveis por posição
+- [x] Rebrand in-app para "THE ONE PORCENT" (título, sidebar, login, package.json)
 
 ## 🎯 PRÓXIMA SESSÃO
 
-Roadmap inicial da spec (`docs/PROTOC_1_spec.md`) 100% entregue, incluindo o item opcional de Perfil, tudo em produção. Nenhuma tarefa obrigatória pendente — próximos passos ficam a critério do usuário (ex.: domínio próprio, mais lições, ajustes de conteúdo).
+Roadmap funcional 100% entregue. Pendente apenas a finalização do rebrand
+externo: renomear o repositório no GitHub e o projeto na Vercel para
+`the-one-porcent` (a URL de produção muda). Ver `sessions/sessao-004.md`
+para o passo a passo — depende de ações manuais do usuário (renomear via
+dashboard), sem ferramenta automática disponível pra isso.
+
+Se o usuário topar, o próximo passo natural depois disso seria decidir
+sobre os vídeos do YouTube em Posições (ele pediu pra ver as animações
+primeiro e decidir depois).
 
 ## 🐛 BUGS CONHECIDOS
 
